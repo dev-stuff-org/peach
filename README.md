@@ -38,8 +38,6 @@ This is the thing people keep the app open for.
 
 **Reply without switching windows.** "Continue" · "Try again" straight from the row.
 
-![Reading a session, with files and images inline](assets/session.png)
-
 **Search everything ever said** — across every project, including sessions whose
 terminals were closed long ago.
 
@@ -47,7 +45,9 @@ terminals were closed long ago.
 
 **Background agents** — what each one is doing right now.
 
-![Background sub-agent monitor](assets/agents.png)
+**A Markdown editor that gets Hebrew right** — every line takes its own direction as you type.
+
+![Editing a mixed Hebrew and English Markdown file](assets/editor.png)
 
 **Restore** closed sessions back into terminal windows.
 
