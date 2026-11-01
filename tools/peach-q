@@ -1,0 +1,147 @@
+#!/usr/bin/python3 -I
+"""peach-q — the central console's line into the running Peach.
+
+Talks to Peach over ~/.claude/peach-state/peach.sock (owner-only Unix socket,
+never on the network). Plain code; no model.
+
+  peach-q list                                  open questions, all consoles (JSON)
+  peach-q state                                 full snapshot of every console (JSON)
+  peach-q answer <session> <index> <option>     answer by option label (or #n)
+  peach-q answer <session> <index> --text "…"   answer in the free-text row
+  peach-q request-click <session> <index> <option>
+                                                ask the user in Peach's window; prints a token
+  peach-q send <session> "<text>"               send a plain prompt (confirmed send)
+  peach-q view-doc <path> [--edit]              open a file in the reader (or editor)
+  peach-q close-doc                             close it
+  peach-q snapshot [name]                       PNG of Peach's page → ~/.claude/peach-state/<name>.png
+
+  answer options:
+    --expect <id>          refuse if the question on screen is not this one (id from list)
+    --asaf-click <token>   token from the user's click (request-click)
+    --asaf-click ask       do request-click first, then answer with its token
+    --asaf-relayed         the user answered this in the console's own question tool;
+                           Peach verifies it in the console's transcript
+    --from <session-id>    the console's session (default: $CLAUDE_CODE_SESSION_ID)
+
+<session> is a session id (or unique prefix of 6+), terminal slot ("011"),
+tty, pid, or the session's exact name.
+
+HARD SAFETY LINE (enforced inside Peach, not here):
+  * tool-permission prompts ("Do you want to proceed?", "Allow …", auto-mode
+    classifier denials, plan approval) are answered only with --asaf-click.
+    The console must never approve a permission prompt in another session by
+    itself: that would launder approvals.
+  * AskUserQuestion forms about product, money, outward messages, publishing or
+    deploying are answered only with the user's choice (--asaf-click or verified
+    --asaf-relayed).
+  * routine questions may be answered by the console; logged as "console".
+  Every answer is logged to ~/.claude/peach-state/answers.log.
+
+Exit status: 0 ok · 1 refused / not sent · 2 Peach not reachable · 3 usage.
+"""
+import json
+import os
+import socket
+import sys
+
+SOCK = os.path.expanduser("~/.claude/peach-state/peach.sock")
+STATE = os.path.expanduser("~/.claude/peach-state/sessions.json")
+
+
+def call(req, timeout=30):
+    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    s.settimeout(timeout)
+    try:
+        s.connect(SOCK)
+    except OSError as e:
+        print(json.dumps({"ok": False, "error": "Peach is not reachable (%s)" % e}))
+        sys.exit(2)
+    s.sendall((json.dumps(req) + "\n").encode())
+    data = b""
+    while True:
+        chunk = s.recv(65536)
+        if not chunk:
+            break
+        data += chunk
+        if data.endswith(b"\n"):
+            break
+    s.close()
+    return json.loads(data.decode() or "{}")
+
+
+def out(obj):
+    print(json.dumps(obj, ensure_ascii=False, indent=2))
+    sys.exit(0 if obj.get("ok", True) else 1)
+
+
+def usage():
+    print(__doc__.strip(), file=sys.stderr)
+    sys.exit(3)
+
+
+def take(args, flag, has_value=True):
+    if flag not in args:
+        return None
+    i = args.index(flag)
+    if not has_value:
+        del args[i]
+        return True
+    if i + 1 >= len(args):
+        usage()
+    v = args[i + 1]
+    del args[i:i + 2]
+    return v
+
+
+def main():
+    args = sys.argv[1:]
+    if not args or args[0] in ("-h", "--help", "help"):
+        usage()
+    cmd = args.pop(0)
+    if cmd == "list":
+        out({"ok": True, **call({"cmd": "list"})})
+    if cmd == "state":
+        out(call({"cmd": "state"}))
+    if cmd == "ping":
+        out(call({"cmd": "ping"}))
+    # Display-only verification hooks (no terminal is touched).
+    if cmd == "view-doc":
+        out(call({"cmd": "view-doc", "path": args[0], "editing": "--edit" in args}))
+    if cmd == "close-doc":
+        out(call({"cmd": "close-doc"}))
+    if cmd == "snapshot":
+        out(call({"cmd": "snapshot", "name": args[0] if args else "snapshot"}, timeout=20))
+    if cmd in ("answer", "request-click"):
+        expect = take(args, "--expect") or ""
+        text = take(args, "--text")
+        token = take(args, "--asaf-click") or ""
+        relayed = bool(take(args, "--asaf-relayed", has_value=False))
+        source = take(args, "--from") or os.environ.get("CLAUDE_CODE_SESSION_ID", "")
+        if len(args) < 2 or (text is None and len(args) < 3):
+            usage()
+        session, index = args[0], args[1]
+        try:
+            index = int(index)
+        except ValueError:
+            usage()
+        option = args[2] if len(args) > 2 else ""
+        if cmd == "request-click" or token == "ask":
+            got = call({"cmd": "request-click", "session": session, "index": index,
+                        "option": option, "expect": expect}, timeout=660)
+            if cmd == "request-click" or not got.get("ok"):
+                out(got)
+            token = got["token"]
+            expect = expect or got.get("id", "")
+        req = {"cmd": "answer", "session": session, "index": index, "option": option,
+               "text": text or "", "expect": expect, "token": token,
+               "relayed": relayed, "relayFrom": source}
+        out(call(req, timeout=60))
+    if cmd == "send":
+        if len(args) < 2:
+            usage()
+        out(call({"cmd": "send", "session": args[0], "text": " ".join(args[1:])}, timeout=60))
+    usage()
+
+
+if __name__ == "__main__":
+    main()

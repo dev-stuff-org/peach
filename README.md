@@ -16,13 +16,13 @@ No model, no server, no account.
 
 ![The rack — every running session on one line](assets/rack.png)
 
-### [⬇ Download the latest release](https://github.com/asafsufush/peach/releases/latest)
+### [⬇ Download the latest release](https://github.com/dev-stuff-org/peach/releases/latest)
 
 macOS 12 or later · Apple silicon and Intel · a 2 MB download · signed and
 notarised by Apple, so it opens on a double-click.
 
 **New in 0.33:** long conversations fold — your requests become headers, the
-answers sit beneath them. [All release notes →](https://github.com/asafsufush/peach/releases)
+answers sit beneath them. [All release notes →](https://github.com/dev-stuff-org/peach/releases)
 
 ---
 
@@ -84,20 +84,50 @@ Hebrew · Arabic · Persian · Urdu · Yiddish · Dhivehi · Sindhi.
 
 - **No server and no account.** It reads local session files. Nothing leaves the machine.
 - **No telemetry.** Nothing is counted and nothing is collected.
-- **The source is not published here.** This repository is the download and the
-  issue tracker. That is a deliberate choice, and it is the honest reason there is
-  no `src/` directory to look at.
+- **Open source.** The full source is in this repository, under the MIT licence.
+  Read it, build it, change it.
+
+## Build from source
+
+Requirements: macOS 12 or later, Xcode command-line tools (`swiftc`), and
+optionally Node.js (for the page syntax check and to rebuild the editor).
+
+    ./build.sh                      # build and install to ~/Applications
+    PEACH_NO_INSTALL=1 ./build.sh   # build only, to build/Peach.app
+    PEACH_ARCH=arm64 ./build.sh     # one architecture, faster
+
+Without a Developer ID certificate the app is signed ad-hoc. That works, but
+macOS asks again for permission to control Terminal after each rebuild.
+
+The Markdown editor is CodeMirror 6, bundled offline into
+`Resources/peach-editor.js`. To rebuild it:
+
+    cd tools/editor-bundle && npm ci && npm run build
+
+## Settings
+
+Peach looks for your notes under `~/Documents/claude` by default. To change it:
+
+    defaults write org.hameretz2.peach workRoot ~/notes
+    defaults write org.hameretz2.peach questionsFile ~/notes/questions.md
+    defaults write org.hameretz2.peach handoffsDir ~/notes/handoffs
+
+## Contributing
+
+Bugs and requests: [open an issue](https://github.com/dev-stuff-org/peach/issues).
+Pull requests are welcome; for anything large, open an issue first.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
 
 ## Found a bug?
 
-[Open an issue](https://github.com/asafsufush/peach/issues) — with your macOS
+[Open an issue](https://github.com/dev-stuff-org/peach/issues) — with your macOS
 version and what happened.
 
 Interface in English and Hebrew. · [peach.dev-stuff.org](https://peach.dev-stuff.org)
 
-Built by [Asaf Hameiri](https://github.com/asafsufush), who runs a culture centre in
-Tel Aviv and built its entire ticketing and operations stack with Claude Code —
-which is how the terminal's Hebrew problem became impossible to ignore.
 
 ---
 ---
@@ -117,7 +147,7 @@ which is how the terminal's Hebrew problem became impossible to ignore.
 
 ## להוריד
 
-**[הגרסה האחרונה ←](https://github.com/asafsufush/peach/releases/latest)**
+**[הגרסה האחרונה ←](https://github.com/dev-stuff-org/peach/releases/latest)**
 
 מערכת 12 ומעלה · אפל סיליקון ואינטל · הורדה של 2 מגה · חתום ומאושר אצל
 אפל, ונפתח בלחיצה כפולה.
@@ -152,11 +182,11 @@ which is how the terminal's Hebrew problem became impossible to ignore.
 
 - **בלי שרת ובלי חשבון.** הוא קורא קבצים מקומיים. שום דבר לא יוצא החוצה.
 - **בלי מדידה ובלי איסוף.**
-- **קוד־המקור אינו כאן.** המאגר הזה הוא מקום ההורדה ומקום הדיווח.
+- **קוד פתוח.** כל קוד־המקור נמצא כאן, ברישיון MIT.
 
 ## מצאת באג
 
-[פתח דיווח](https://github.com/asafsufush/peach/issues) — עם גרסת־המערכת
+[פתח דיווח](https://github.com/dev-stuff-org/peach/issues) — עם גרסת־המערכת
 ומה שקרה.
 
 </div>

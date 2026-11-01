@@ -1,36 +1,21 @@
-Peach — Free Software Licence
-Copyright (c) 2026 Asaf Hameiri. All rights reserved.
+MIT License
 
-Peach is distributed free of charge.
+Copyright (c) 2026 dev-stuff.org
 
-PERMISSION IS GRANTED, free of charge and without registration, to any person
-obtaining a copy of this software, to:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-  * install and use Peach, for any purpose, personal or commercial, on any
-    number of machines;
-  * redistribute the unmodified application bundle, provided it is distributed
-    free of charge and this licence is included.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-THE FOLLOWING ARE NOT GRANTED:
-
-  * charging a fee for Peach itself, or bundling it into a paid product;
-  * modifying, decompiling, disassembling or reverse engineering the
-    application, except where such a restriction is void under applicable law;
-  * removing or altering this licence, the application's name, or its
-    attribution.
-
-The source code of Peach is not published. This repository serves as the
-download location and the issue tracker.
-
-NO WARRANTY. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
-EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Peach reads local Claude Code session files on the machine it runs on. It has no
-server, no account and no telemetry, and transmits nothing.
-
-Claude and Claude Code are products of Anthropic PBC. Peach is an independent
-project and is not affiliated with, endorsed by, or sponsored by Anthropic.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
